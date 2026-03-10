@@ -1,6 +1,7 @@
 // api/waitlist.js — Vercel API Route
-// Installe Resend : npm install resend
-// Ajoute RESEND_API_KEY dans tes variables d'environnement Vercel
+// Variables d'environnement Vercel :
+// - RESEND_API_KEY : clé API Resend
+// - GOOGLE_SHEET_URL : URL du Google Apps Script déployé
 
 import { Resend } from 'resend';
 
@@ -18,13 +19,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Notif à toi uniquement
-    await resend.emails.send({
-      from: 'Magistra <onboarding@resend.dev>',
-      to: 'juanrobin89@gmail.com',
-      subject: '🎓 Nouvelle inscription Magistra',
-      html: `<p>Nouvel inscrit sur la waitlist : <strong>${email}</strong></p>`,
-    });
+    // Notif mail + sauvegarde Google Sheets en parallèle
+    await Promise.all([
+      resend.emails.send({
+        from: 'Magistra <onboarding@resend.dev>',
+        to: 'juanrobin89@gmail.com',
+        subject: '🎓 Nouvelle inscription Magistra',
+        html: `<p>Nouvel inscrit sur la waitlist : <strong>${email}</strong></p>`,
+      }),
+      fetch(process.env.GOOGLE_SHEET_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      }),
+    ]);
 
     return res.status(200).json({ success: true });
 
