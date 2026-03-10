@@ -314,6 +314,21 @@
       line-height: 1.5;
     }
 
+    .stat-source {
+      margin-top: 0.5rem;
+      font-size: 0.68rem;
+      color: #b0aa9f;
+      font-style: italic;
+    }
+
+    .stat-source a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(201,168,76,0.3);
+    }
+
+    .stat-source a:hover { border-bottom-color: var(--gold); }
+
     /* ── FEATURES ── */
     .features {
       padding: 6rem 2rem;
@@ -654,14 +669,17 @@
         <div class="stat-card">
           <div class="stat-number">-20%</div>
           <div class="stat-label">Seulement 1 prof sur 5 utilise l'IA régulièrement dans sa pratique professionnelle.</div>
+          <div class="stat-source">Source : <a href="https://www.education.gouv.fr/intelligence-artificielle-au-service-de-l-education-des-mesures-ambitieuses-pour-accompagner-les-416551" target="_blank">Ministère de l'Éducation nationale</a> · <a href="https://www.gostudent.org/fr-fr/blog/statistiques-sur-ia-dans-education-france" target="_blank">GoStudent 2025</a></div>
         </div>
         <div class="stat-card">
           <div class="stat-number">8h+</div>
-          <div class="stat-label">C'est le temps moyen passé chaque semaine à préparer les cours, hors classe.</div>
+          <div class="stat-label">C'est le temps moyen passé chaque semaine à la seule préparation des cours, hors classe.</div>
+          <div class="stat-source">Source : <a href="https://www.education.gouv.fr/depp/les-enseignants-du-premier-degre-public-declarent-travailler-44-heures-par-semaine-en-moyenne-6479" target="_blank">DEPP — Ministère de l'Éducation nationale, 2025</a></div>
         </div>
         <div class="stat-card">
           <div class="stat-number">0</div>
           <div class="stat-label">Aucun outil IA open-source, RGPD-compliant, vraiment fait pour l'enseignement n'existe encore.</div>
+          <div class="stat-source">Constat terrain · Aucune solution open-source francophone dédiée recensée à ce jour</div>
         </div>
       </div>
     </div>
