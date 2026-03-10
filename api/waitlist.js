@@ -19,20 +19,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Notif mail + sauvegarde Google Sheets en parallèle
-    await Promise.all([
-      resend.emails.send({
-        from: 'Magistra <onboarding@resend.dev>',
-        to: 'juanrobin89@gmail.com',
-        subject: '🎓 Nouvelle inscription Magistra',
-        html: `<p>Nouvel inscrit sur la waitlist : <strong>${email}</strong></p>`,
-      }),
+    // Notif mail (obligatoire)
+    await resend.emails.send({
+      from: 'Magistra <onboarding@resend.dev>',
+      to: 'juanrobin89@gmail.com',
+      subject: '🎓 Nouvelle inscription Magistra',
+      html: `<p>Nouvel inscrit sur la waitlist : <strong>${email}</strong></p>`,
+    });
+
+    // Sauvegarde Google Sheets (optionnel, ne bloque pas l'inscription)
+    if (process.env.GOOGLE_SHEET_URL) {
       fetch(process.env.GOOGLE_SHEET_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
-      }),
-    ]);
+      }).catch(err => console.error('Google Sheets error:', err));
+    }
 
     return res.status(200).json({ success: true });
 
