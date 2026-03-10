@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magistra — L'IA pour les enseignants</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0f0e0c;
+      --cream: #f7f4ef;
+      --gold: #c9a84c;
+      --gold-light: #e8d49a;
+      --muted: #7a7468;
+      --surface: #eeeae3;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 3rem;
+      background: rgba(247,244,239,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--gold); }
+
+    .nav-cta {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid var(--gold);
+      padding: 0.55rem 1.4rem;
+      border-radius: 2px;
+      transition: all 0.25s;
+    }
+
+    .nav-cta:hover { background: var(--gold); color: white; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 8rem 2rem 4rem;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(201,168,76,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 70%, rgba(201,168,76,0.05) 0%, transparent 60%);
+    }
+
+    .hero-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(201,168,76,0.06) 80px);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 820px;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.4);
+      padding: 0.4rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.8rem;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 540px;
+      margin: 0 auto 3rem;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+
+    .hero-form {
+      display: flex;
+      gap: 0;
+      max-width: 460px;
+      margin: 0 auto;
+      animation: fadeUp 0.8s ease 0.3s both;
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(15,14,12,0.08);
+    }
+
+    .hero-form input {
+      flex: 1;
+      padding: 1rem 1.2rem;
+      border: none;
+      background: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .hero-form input::placeholder { color: #b0aa9f; }
+
+    .hero-form button {
+      padding: 1rem 1.6rem;
+      background: var(--gold);
+      color: white;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .hero-form button:hover { background: #b8962e; }
+
+    .hero-note {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
+
+    .hero-count {
+      margin-top: 2.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6rem;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+
+    .hero-count .dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .hero-count .dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid white;
+      margin-left: -8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.55rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .hero-count .dot:first-child { margin-left: 0; }
+
+    .hero-count span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      text-align: center;
+      padding: 3rem 2rem;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+    }
+
+    .divider-text {
+      display: inline-block;
+      background: var(--cream);
+      padding: 0 2rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      font-style: italic;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      position: relative;
+    }
+
+    /* ── PROBLEM ── */
+    .problem {
+      padding: 5rem 2rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .problem-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.2;
+    }
+
+    .problem-title em { font-style: italic; color: var(--gold); }
+
+    .problem-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid rgba(201,168,76,0.15);
+      border-left: 3px solid var(--gold);
+      padding: 1.2rem 1.4rem;
+      border-radius: 2px;
+    }
+
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 6rem 2rem;
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    .features-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .features-header .section-label { color: var(--gold-light); }
+
+    .features-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 3.8rem);
+      font-weight: 300;
+      line-height: 1.15;
+      color: var(--cream);
+    }
+
+    .features-title em { font-style: italic; color: var(--gold); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: rgba(201,168,76,0.15);
+    }
+
+    .feature-card {
+      background: var(--ink);
+      padding: 2.5rem 2rem;
+      transition: background 0.3s;
+    }
+
+    .feature-card:hover { background: #1a1916; }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .feature-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 0.7rem;
+    }
+
+    .feature-desc {
+      font-size: 0.85rem;
+      color: rgba(247,244,239,0.5);
+      line-height: 1.7;
+    }
+
+    /* ── HOW ── */
+    .how {
+      padding: 6rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .how-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 3.5rem;
+    }
+
+    .how-title em { font-style: italic; color: var(--gold); }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      text-align: left;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      left: 1.25rem;
+      top: 2rem;
+      bottom: 2rem;
+      width: 1px;
+      background: linear-gradient(180deg, var(--gold), rgba(201,168,76,0.2));
+    }
+
+    .step {
+      display: flex;
+      gap: 1.8rem;
+      align-items: flex-start;
+      padding: 1.8rem 0;
+    }
+
+    .step-num {
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      flex-shrink: 0;
+      background: var(--cream);
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .step-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── CTA FINAL ── */
+    .cta-final {
+      padding: 6rem 2rem;
+      text-align: center;
+      background: linear-gradient(180deg, var(--cream) 0%, var(--surface) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-final::before {
+      content: 'MAGISTRA';
+      position: absolute;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18vw;
+      font-weight: 600;
+      color: rgba(201,168,76,0.05);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-final-inner { position: relative; max-width: 600px; margin: 0 auto; }
+
+    .cta-final-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+
+    .cta-final-title em { font-style: italic; color: var(--gold); }
+
+    .cta-final-sub {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+
+    .cta-final-form {
+      display: flex;
+      gap: 0;
+      max-width: 420px;
+      margin: 0 auto;
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 12px 50px rgba(15,14,12,0.1);
+    }
+
+    .cta-final-form input {
+      flex: 1;
+      padding: 1rem 1.2rem;
+      border: none;
+      background: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      color: var(--ink);
+    }
+
+    .cta-final-form input::placeholder { color: #b0aa9f; }
+
+    .cta-final-form button {
+      padding: 1rem 1.5rem;
+      background: var(--ink);
+      color: var(--gold);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .cta-final-form button:hover { background: #2a2926; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 3rem;
+      border-top: 1px solid rgba(201,168,76,0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .footer-logo span { color: var(--gold); }
+
+    .footer-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* ── SUCCESS ── */
+    .success-msg {
+      display: none;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .problem-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.8rem; text-align: center; }
+      .hero-form { flex-direction: column; border-radius: 4px; }
+      .hero-form input, .hero-form button { width: 100%; }
+      .cta-final-form { flex-direction: column; border-radius: 4px; }
+      .cta-final-form input, .cta-final-form button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">Magistra<span>.</span></a>
+    <a href="#waitlist" class="nav-cta">Rejoindre la liste</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Bientôt disponible · Accès anticipé</div>
+      <h1 class="hero-title">
+        L'IA qui prépare<br>vos cours à votre <em>place</em>
+      </h1>
+      <p class="hero-sub">
+        Magistra est l'assistant IA conçu pour les enseignants. Générez des cours, des exercices et des évaluations en quelques secondes — adaptés à vos élèves, à votre programme, à votre style.
+      </p>
+      <div class="hero-form" id="waitlist">
+        <input type="email" id="hero-email" placeholder="votre@email.com" />
+        <button onclick="handleSignup('hero-email', 'hero-success')">Rejoindre →</button>
+      </div>
+
+      <p class="success-msg" id="hero-success">✦ Vous êtes sur la liste. Nous vous contacterons en priorité.</p>
+      <div class="hero-count">
+        <div class="dots">
+          <div class="dot">P</div>
+          <div class="dot">M</div>
+          <div class="dot">A</div>
+          <div class="dot">+</div>
+        </div>
+        <span>Rejoignez les premiers enseignants inscrits</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider">
+    <span class="divider-text">Le problème que personne ne résout</span>
+  </div>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="problem-grid">
+      <div class="reveal">
+        <p class="section-label">Le constat</p>
+        <h2 class="problem-title">
+          Les élèves utilisent l'IA.<br>Les profs <em>préparent</em><br>encore à la main.
+        </h2>
+      </div>
+      <div class="problem-stats reveal">
+        <div class="stat-card">
+          <div class="stat-number">-20%</div>
+          <div class="stat-label">Seulement 1 prof sur 5 utilise l'IA régulièrement dans sa pratique professionnelle.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">8h+</div>
+          <div class="stat-label">C'est le temps moyen passé chaque semaine à préparer les cours, hors classe.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Aucun outil IA open-source, RGPD-compliant, vraiment fait pour l'enseignement n'existe encore.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="features-inner">
+      <div class="features-header reveal">
+        <p class="section-label">Ce que Magistra fait</p>
+        <h2 class="features-title">Tout ce dont un enseignant<br>a besoin, <em>enfin</em> réuni</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">✦</div>
+          <div class="feature-name">Génération de cours</div>
+          <div class="feature-desc">Entrez un sujet, un niveau, une durée. Magistra génère un cours structuré, pédagogiquement cohérent, prêt à l'emploi.</div>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">◈</div>
+          <div class="feature-name">Exercices adaptés</div>
+          <div class="feature-desc">Créez des séries d'exercices différenciés — pour les élèves en difficulté comme pour ceux en avance — en un clic.</div>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">◎</div>
+          <div class="feature-name">Évaluations & barèmes</div>
+          <div class="feature-desc">Générez des contrôles avec leurs corrigés et barèmes, alignés sur les objectifs du programme officiel.</div>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">⬡</div>
+          <div class="feature-name">Multi-niveaux & matières</div>
+          <div class="feature-desc">Du primaire au lycée, toutes les matières. Magistra s'adapte à votre contexte scolaire et à vos élèves.</div>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">◉</div>
+          <div class="feature-name">Open-source & RGPD</div>
+          <div class="feature-desc">Vos données n'appartiennent qu'à vous. Magistra est construit dans la transparence, pour l'éducation publique.</div>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">✧</div>
+          <div class="feature-name">Disponible partout</div>
+          <div class="feature-desc">France, Europe, et bientôt dans les pays francophones du monde entier. L'éducation n'a pas de frontières.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section class="how">
+    <h2 class="how-title reveal">Simple comme <em>bonjour</em></h2>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Décrivez votre besoin</div>
+          <div class="step-desc">Matière, niveau, durée, objectifs pédagogiques. En quelques mots, Magistra comprend ce dont vous avez besoin.</div>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Magistra génère en secondes</div>
+          <div class="step-desc">Cours, exercices, évaluation — tout est généré instantanément, structuré et prêt à l'emploi.</div>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Retouchez, exportez, enseignez</div>
+          <div class="step-desc">Modifiez ce que vous voulez, exportez en PDF ou Word, et consacrez votre temps à ce qui compte vraiment : vos élèves.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final">
+    <div class="cta-final-inner">
+      <h2 class="cta-final-title reveal">
+        Prêt à retrouver<br>du <em>temps</em> ?
+      </h2>
+      <p class="cta-final-sub reveal">
+        Rejoignez les premiers enseignants sur liste d'attente et accédez à Magistra en avant-première, gratuitement.
+      </p>
+      <div class="cta-final-form reveal">
+        <input type="email" id="cta-email" placeholder="votre@email.com" />
+        <button onclick="handleSignup('cta-email', 'cta-success')">Je m'inscris →</button>
+      </div>
+      <p class="success-msg" id="cta-success">✦ Vous êtes sur la liste. À très bientôt.</p>
+    </div>
+  </section>
+
+  <!-- FUTURAI -->
+  <section style="padding:5rem 2rem; max-width:860px; margin:0 auto; text-align:center;">
+    <div class="reveal">
+      <p class="section-label" style="margin-bottom:1.2rem;">Le projet derrière Magistra</p>
+      <h2 style="font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3rem); font-weight:300; line-height:1.2; margin-bottom:1.4rem;">
+        Construit dans le cadre de <em style="font-style:italic;color:var(--gold);">FutureAI</em>
+      </h2>
+      <p style="font-size:0.95rem; color:var(--muted); line-height:1.8; max-width:600px; margin:0 auto 2rem;">
+        Magistra est un projet de <a href="https://futurai.space" target="_blank" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.4);">FutureAI</a> — une plateforme open-source qui co-construit des outils IA avec des communautés du monde entier. Notre mission : rendre l'intelligence artificielle utile, accessible et éthique pour tous — éducation, santé, agriculture — en France comme dans les pays en développement.
+      </p>
+      <a href="https://futurai.space" target="_blank" style="display:inline-block;font-size:0.78rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.4);padding:0.7rem 1.6rem;border-radius:2px;text-decoration:none;">
+        Découvrir FutureAI →
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Magistra<span>.</span></div>
+    <div class="footer-note">Un projet <a href="https://futurai.space" style="color:var(--gold);text-decoration:none;">FutureAI</a> · Bordeaux, France · 2026</div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 60);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Signup
+    async function handleSignup(inputId, successId) {
+      const input = document.getElementById(inputId);
+      const success = document.getElementById(successId);
+      const email = input.value.trim();
+
+      if (!email || !email.includes('@')) {
+        input.style.outline = '2px solid #e05';
+        input.style.background = '#fff5f5';
+        setTimeout(() => {
+          input.style.outline = '';
+          input.style.background = '';
+        }, 1000);
+        return;
+      }
+
+      const btn = input.nextElementSibling;
+      btn.textContent = '...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+
+        if (res.ok) {
+          input.parentElement.style.display = 'none';
+          success.style.display = 'block';
+        } else {
+          btn.textContent = 'Réessayer →';
+          btn.disabled = false;
+        }
+      } catch (e) {
+        btn.textContent = 'Réessayer →';
+        btn.disabled = false;
+      }
+    }
+
+    // Enter key
+    document.querySelectorAll('input[type=email]').forEach(inp => {
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          const btn = inp.nextElementSibling;
+          if (btn) btn.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
