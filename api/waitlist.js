@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     // Notif mail (obligatoire)
     await resend.emails.send({
       from: 'Magistra <onboarding@resend.dev>',
-      to: 'juanrobin89@gmail.com',
+      to: 'juanrobin09@gmail.com',
       subject: '🎓 Nouvelle inscription Magistra',
       html: `<p>Nouvel inscrit sur la waitlist : <strong>${email}</strong></p>`,
     });
